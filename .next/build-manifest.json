@@ -32,20 +32,25 @@
       "static/chunks/main.js",
       "static/chunks/pages/dashboard.js"
     ],
-    "/hospital-dashboard": [
+    "/doctor/[id]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/hospital-dashboard.js"
+      "static/chunks/pages/doctor/[id].js"
+    ],
+    "/doctors": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/doctors.js"
+    ],
+    "/hospitals": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/hospitals.js"
     ],
     "/login": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/login.js"
-    ],
-    "/signup": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/signup.js"
     ]
   },
   "ampFirstPages": []
