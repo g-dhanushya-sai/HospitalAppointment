@@ -184,7 +184,7 @@ export default function HospitalDashboard() {
                   <div className="card-body">
                     <p><strong>📧 Email:</strong> {d.user?.email}</p>
                     <p><strong>📝 Bio:</strong> {d.bio || 'No bio'}</p>
-                    <p><strong>🏢 Department:</strong> {d.departmentId}</p>
+                    <p><strong>🏢 Department:</strong> {d.department?.name ?? 'Not assigned'}</p>
                   </div>
                 </div>
               ))}

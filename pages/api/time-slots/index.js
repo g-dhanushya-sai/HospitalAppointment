@@ -2,15 +2,33 @@ const prisma = require('../../../lib/prisma')
 const { getUserFromHeader } = require('../../../lib/auth')
 
 function isoToDate(s) {
-  const d = new Date(s)
-  return isNaN(d.getTime()) ? null : d
+  // s = "2025-12-23T16:40" (local time)
+  const [datePart, timePart] = s.split('T')
+  const [year, month, day] = datePart.split('-').map(Number)
+  const [hour, minute] = timePart.split(':').map(Number)
+
+  // Create a Date as LOCAL time, then convert to UTC
+  const localDate = new Date(year, month - 1, day, hour, minute)
+
+  return isNaN(localDate.getTime()) ? null : localDate
 }
+
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
     const { doctorId } = req.query
     const where = doctorId ? { where: { doctorId } } : {}
-    const slots = await prisma.timeSlot.findMany(where)
+    const slots = await prisma.timeSlot.findMany({
+      ...where,
+      include: {
+        appointments: {
+          select: {
+            id: true
+          }
+        }
+      }
+    })
+
     return res.json({ slots })
   }
 

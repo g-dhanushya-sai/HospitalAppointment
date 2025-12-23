@@ -27,13 +27,13 @@ export default function Doctor() {
 
   async function book(slotId) {
     if (!reason.trim()) {
-      setMsg('Please provide a reason for your appointment')
+      alert('⚠️ Please provide a reason for your appointment')
       return
     }
 
     const token = localStorage.getItem('token')
     if (!token) {
-      setMsg('Please log in to book an appointment')
+      alert('⚠️ Please log in to book an appointment')
       return
     }
 
@@ -91,6 +91,10 @@ export default function Doctor() {
               <div className="card-body">
                 <p><strong>📧 Email:</strong> {doctor?.user?.email}</p>
                 <p><strong>📝 Bio:</strong> {doctor?.bio || 'No bio available'}</p>
+                <p>
+                  <strong>🏢 Department:</strong>{' '}
+                  {doctor?.department?.name ?? 'Not assigned'}
+                </p>
               </div>
             </div>
           </div>
@@ -121,29 +125,49 @@ export default function Doctor() {
                 <div className="alert alert-info">No available slots at this time</div>
               ) : (
                 <div style={{ marginTop: '1rem' }}>
-                  {slots.map(s => (
-                    <div
-                      key={s.id}
-                      className={`card ${selectedSlot === s.id ? 'card-selected' : ''}`}
-                      onClick={() => setSelectedSlot(s.id)}
-                      style={{
-                        cursor: 'pointer',
-                        border: selectedSlot === s.id ? '2px solid var(--primary)' : '1px solid var(--border)',
-                        marginBottom: '0.5rem'
-                      }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div>
-                          <p><strong>📅 {new Date(s.start).toLocaleDateString()}</strong></p>
-                          <p>⏰ {new Date(s.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {new Date(s.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                  {slots.map(s => {
+                    const isBooked = s.appointments && s.appointments.length > 0
+
+                    return (
+                      <div
+                        key={s.id}
+                        className={`card ${selectedSlot === s.id ? 'card-selected' : ''}`}
+                        onClick={() => {
+                          if (!isBooked) setSelectedSlot(s.id)
+                        }}
+                        style={{
+                          cursor: isBooked ? 'not-allowed' : 'pointer',
+                          border:
+                            selectedSlot === s.id
+                              ? '2px solid var(--primary)'
+                              : isBooked
+                              ? '2px solid #dc3545'
+                              : '2px solid #28a745',
+                          backgroundColor: isBooked ? '#fdecea' : '#eafaf1',
+                          marginBottom: '0.5rem',
+                          opacity: isBooked ? 0.7 : 1
+                        }}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div>
+                            <p><strong>📅 {new Date(s.start).toLocaleDateString()}</strong></p>
+                            <p>
+                              ⏰ {new Date(s.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{' '}
+                              {new Date(s.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </p>
+                          </div>
+
+                          {isBooked ? (
+                            <span className="badge badge-danger">Booked</span>
+                          ) : selectedSlot === s.id ? (
+                            <span className="badge badge-primary">Selected</span>
+                          ) : null}
                         </div>
-                        {selectedSlot === s.id && (
-                          <span className="badge badge-primary">Selected</span>
-                        )}
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
+
               )}
 
               {selectedSlot && (
